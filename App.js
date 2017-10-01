@@ -5,34 +5,66 @@ import {
     View,
     Image,
     ScrollView,
-    Button,
     Alert,
-    TouchableHighlight
+    TouchableNativeFeedback,
+    FlatList
 } from 'react-native';
 
 class FeedItem extends Component {
-    _onPressButton() {
-        Alert.alert('You tapped the button!')
-    }
+    _onPress = () => {
+        this.props.onPressItem(this.props.feedItem._id);
+        // Alert.alert('You tapped the button!')
+    };
 
     render() {
         let image = {
-            uri: this.props.feeditem.image
+            uri: this.props.feedItem.feedImageUrl
         };
         return (
-            <View style={{
-                flex: 1
-            }}>
-                <Text style={styles.title}>{this.props.feeditem.title}</Text>
-                <TouchableHighlight onPress={this._onPressButton}>
+            <View style={{flex: 1}}>
+                {/* <Text>{'Selected: ' + this.props.selected}</Text> */}
+                <Text style={styles.title}>{this.props.feedItem.title}</Text>
+                <TouchableNativeFeedback onPress={this._onPress}>
                     <Image source={image} style={{
                         flex: 1,
                         aspectRatio: 1
                     }}/>
-                </TouchableHighlight>
-                <Button onPress={this._onPressButton} title="Press Me"/>
+                </TouchableNativeFeedback>
             </View>
         );
+    }
+}
+
+class FeedItemList extends React.PureComponent {
+    state = {selected: (new Map(): Map<string, boolean>)};
+
+    _onPressItem = (_id: string) => {
+        Alert.alert('You tapped the button!');
+
+        this.setState((state) => {
+            const selected = new Map(state.selected);
+            selected.set(_id, !selected.get(_id)); // toggle
+            return {selected};
+        });
+    };
+
+    _renderItem = ({item}) => (
+        <FeedItem
+            feedItem = {item}
+            onPressItem = {this._onPressItem}
+            selected = {!!this.state.selected.get(item._id)}
+        />
+    );
+
+    render() {
+        return (
+            <FlatList
+                data={this.props.data}
+                keyExtractor={item => item._id}
+                renderItem={this._renderItem}
+                extraData={this.state}
+            />
+        )
     }
 }
 
@@ -40,24 +72,57 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            item1: {
-                title: 'Legend',
-                image: 'https://cdn.shopify.com/s/files/1/2231/5113/products/Legend_Shirt_12-optimized.jpg?v=1505517105'
-            },
-            item2: {
-                title: 'BYU vs. Boise State',
-                image: 'https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F34000609%2F216775133792%2F1%2Foriginal.jpg?s=b2543faed39a9de3141d9141ef496cbb'
-            }
-        }
+            loading: false,
+            refreshing: false,
+            itemIndex: null,
+            count: 2,
+            error: null,
+            feedItems: []
+        };
     }
 
+    componentDidMount() {
+        this.getFeedItems();
+    }
+
+    getFeedItems = () => {
+        // const {itemIndex, count} = this.state;
+        // const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems?index=${itemIndex}&count=${count}';
+        const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems';
+        // this.setState({loading:true});
+        fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                // const i = res[count-1] ? res[count-1]._id : null;
+                const x = this.state.feedItems.length;
+                console.log(res);
+                this.setState({
+                    // loading: false,
+                    // refreshing: false,
+                    // error: res.error || null,
+                    // itemIndex: i,
+                    feedItems: x ? res : [...this.state.feedItems, ...res]
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
     render() {
-        return (
-            <ScrollView style={styles.container}>
-                <FeedItem feeditem={this.state.item1}/>
-                <FeedItem feeditem={this.state.item2}/>
-            </ScrollView>
-        );
+        if (this.state.feedItems.length == 0) {
+            return (
+                <View>
+                    <Text>{'Nothing here!'}</Text>
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <FeedItemList data={this.state.feedItems}/>
+                </View>
+            );
+        }
     }
 }
 
