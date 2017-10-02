@@ -2,11 +2,21 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     Text,
-    View
+    View,
+    Button
 } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 import FeedItemList from './components/FeedItemList';
+import FeedItem from './components/FeedItem';
+import { FeedItemDetailScreen } from './components/FeedItemDetail';
+import DonateButton from './components/DonateButton';
 
-export default class App extends React.Component {
+class FeedScreen extends React.Component {
+    static navigationOptions = {
+        title: 'More2Life',
+        headerRight: <DonateButton />
+    };
+
     constructor(props) {
         super(props);
         this.state = {
@@ -18,11 +28,9 @@ export default class App extends React.Component {
             feedItems: []
         };
     }
-
     componentDidMount() {
         this.getFeedItems();
     }
-
     getFeedItems = () => {
         // const {itemIndex, count} = this.state;
         // const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems?index=${itemIndex}&count=${count}';
@@ -48,21 +56,27 @@ export default class App extends React.Component {
     };
 
     render() {
+        const {navigate} = this.props.navigation;
         if (this.state.feedItems.length == 0) {
             return (
                 <View>
-                    <Text>{'Nothing here!'}</Text>
+                    <Text>{'Fetching the feed...'}</Text>
                 </View>
             );
         } else {
             return (
                 <View>
-                    <FeedItemList data={this.state.feedItems}/>
+                    <FeedItemList data={this.state.feedItems} navigate={navigate}/>
                 </View>
             );
         }
     }
 }
+
+export default App = StackNavigator({
+    Feed: { screen: FeedScreen },
+    Detail: { screen: FeedItemDetailScreen },
+});
 
 const styles = StyleSheet.create({
     container: {

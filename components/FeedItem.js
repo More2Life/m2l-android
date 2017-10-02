@@ -7,10 +7,9 @@ import {
     StyleSheet
 } from 'react-native';
 
-export default class FeedItem extends Component {
+export default class FeedItem extends React.PureComponent {
     _onPress = () => {
-        this.props.onPressItem(this.props.feedItem._id);
-        // Alert.alert('You tapped the button!')
+        this.props.onPressItem(this.props.feedItem);
     };
 
     render() {
@@ -19,7 +18,6 @@ export default class FeedItem extends Component {
         };
         return (
             <View style={{flex: 1}}>
-                {/* <Text>{'Selected: ' + this.props.selected}</Text> */}
                 <Text style={styles.title}>{this.props.feedItem.title}</Text>
                 <TouchableNativeFeedback onPress={this._onPress}>
                     <Image source={image} style={{

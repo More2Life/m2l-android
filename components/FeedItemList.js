@@ -8,14 +8,8 @@ import FeedItem from './FeedItem'
 export default class FeedItemList extends React.PureComponent {
     state = {selected: (new Map(): Map<string, boolean>)};
 
-    _onPressItem = (_id: string) => {
-        Alert.alert('You tapped the button!');
-
-        this.setState((state) => {
-            const selected = new Map(state.selected);
-            selected.set(_id, !selected.get(_id)); // toggle
-            return {selected};
-        });
+    _onPressItem = (feedItem) => {
+        this.props.navigate('Detail', { feedItem: feedItem })
     };
 
     _renderItem = ({item}) => (
