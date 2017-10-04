@@ -1,31 +1,54 @@
 import React from 'react';
 import {
-    Alert,
     FlatList
 } from 'react-native';
 import FeedItem from './FeedItem'
+import utils from '../utilities/utils';
 
-export default class FeedItemList extends React.PureComponent {
-    state = {selected: (new Map(): Map<string, boolean>)};
+const shopify = utils.getShopifyClient();
 
-    _onPressItem = (feedItem) => {
-        this.props.navigate('Detail', { feedItem: feedItem })
+export default class FeedItemList extends React.Component {
+    constructor(props) {
+        super(props);
     };
 
-    _renderItem = ({item}) => (
+    _fetchProductFromShopify = (handle, callback) => {
+        shopify.fetchProductByHandle(handle)
+            .then( (product) => {
+                console.log(JSON.stringify(product));
+                callback(JSON.parse(JSON.stringify(product)));
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    _onPressItem = (feedItem) => {
+        this._fetchProductFromShopify(feedItem.handle, (product) => {
+            this.props.navigate('Detail', { feedItem: feedItem, product: product })
+        })
+    };
+
+    _onPressBuy = (handle) => {
+        this._fetchProductFromShopify(handle, () => {
+            console.log('from callback');
+        });
+    };
+
+    _renderFeedItem = ({item}) => (
         <FeedItem
             feedItem = {item}
             onPressItem = {this._onPressItem}
-            selected = {!!this.state.selected.get(item._id)}
+            onPressBuy = {this._onPressBuy}
         />
     );
 
     render() {
         return (
             <FlatList
-                data={this.props.data}
+                data={this.props.feedItems}
                 keyExtractor={item => item._id}
-                renderItem={this._renderItem}
+                renderItem={this._renderFeedItem}
                 extraData={this.state}
             />
         )

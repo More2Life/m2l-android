@@ -3,14 +3,19 @@ import {
     Text,
     View,
     Image,
+    Button,
     TouchableNativeFeedback,
     StyleSheet
 } from 'react-native';
 
 export default class FeedItem extends React.PureComponent {
-    _onPress = () => {
+    _onPressDetail = () => {
         this.props.onPressItem(this.props.feedItem);
     };
+
+    _onPressBuy = () => {
+        this.props.onPressBuy(this.props.feedItem.handle);
+    }
 
     render() {
         let image = {
@@ -19,12 +24,13 @@ export default class FeedItem extends React.PureComponent {
         return (
             <View style={{flex: 1}}>
                 <Text style={styles.title}>{this.props.feedItem.title}</Text>
-                <TouchableNativeFeedback onPress={this._onPress}>
+                <TouchableNativeFeedback onPress={this._onPressDetail}>
                     <Image source={image} style={{
                         flex: 1,
                         aspectRatio: 1
                     }}/>
                 </TouchableNativeFeedback>
+                <Button title={'Buy'} onPress={this._onPressBuy}/>
             </View>
         );
     }

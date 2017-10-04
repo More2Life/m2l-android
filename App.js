@@ -3,13 +3,17 @@ import {
     StyleSheet,
     Text,
     View,
-    Button
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import FeedItemList from './components/FeedItemList';
-import FeedItem from './components/FeedItem';
 import { FeedItemDetailScreen } from './components/FeedItemDetail';
 import DonateButton from './components/DonateButton';
+
+// ==> an extreme hack but apparently absolutely critical
+if (!global.atob) {
+    global.atob = require('base-64').decode;
+    global.btoa = require('base-64').encode;
+}// ======================================================
 
 class FeedScreen extends React.Component {
     static navigationOptions = {
@@ -41,7 +45,7 @@ class FeedScreen extends React.Component {
             .then(res => {
                 // const i = res[count-1] ? res[count-1]._id : null;
                 const x = this.state.feedItems.length;
-                console.log(res);
+                // console.log(res);
                 this.setState({
                     // loading: false,
                     // refreshing: false,
@@ -66,7 +70,7 @@ class FeedScreen extends React.Component {
         } else {
             return (
                 <View>
-                    <FeedItemList data={this.state.feedItems} navigate={navigate}/>
+                    <FeedItemList feedItems={this.state.feedItems} navigate={navigate}/>
                 </View>
             );
         }
