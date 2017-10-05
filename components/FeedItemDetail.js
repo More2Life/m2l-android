@@ -6,11 +6,11 @@ import {
     Image,
     StyleSheet,
     Platform,
-    Button,
     TouchableNativeFeedback,
     Linking
 } from 'react-native';
-// import Button from 'apsl-react-native-button';
+import { Button } from 'react-native-elements';
+import utils from '../utilities/utils';
 
 class FeedItemDetail extends React.PureComponent {
     _getProduct = () => {
@@ -51,10 +51,11 @@ class FeedItemDetail extends React.PureComponent {
                 }}/>
                 <Text>{this.props.feedItem.description}</Text>
                 <Button
-                    title={'See More'}
-                    style={styles.butt}
-                    onPress={this._takeAction}>
-                </Button>
+                    title={utils.getActionButtonLabel(this.props.feedItem.type)}
+                    onPress={this._takeAction}
+                    large={true}
+                    backgroundColor={'#1673E6'}
+                />
             </View>
         );
     }

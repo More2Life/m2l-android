@@ -3,6 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
+    Platform,
+    StatusBar
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import FeedItemList from './components/FeedItemList';
@@ -18,7 +20,10 @@ if (!global.atob) {
 class FeedScreen extends React.Component {
     static navigationOptions = {
         title: 'More2Life',
-        headerRight: <DonateButton />
+        headerRight: <DonateButton />,
+        headerStyle: {
+            paddingRight: 20
+        }
     };
 
     constructor(props) {
@@ -77,10 +82,15 @@ class FeedScreen extends React.Component {
     }
 }
 
-export default App = StackNavigator({
-    Feed: { screen: FeedScreen },
-    Detail: { screen: FeedItemDetailScreen },
-});
+export default App = StackNavigator(
+    {
+        Feed: { screen: FeedScreen },
+        Detail: { screen: FeedItemDetailScreen }
+    },
+    {
+        cardStyle: { paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight }
+    }
+);
 
 const styles = StyleSheet.create({
     container: {

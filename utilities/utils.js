@@ -11,7 +11,18 @@ const utils = {
         });
 
         return new Client(config);
+    },
+
+    getActionButtonLabel: (type) => {
+        const actionButtonLabels = {
+            event: 'See More',
+            story: 'See More',
+            listing: 'Buy',
+            donation: 'Donate'
+        }
+        return actionButtonLabels[type];
     }
+
 }
 
 export default utils;

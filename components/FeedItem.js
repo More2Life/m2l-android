@@ -3,10 +3,11 @@ import {
     Text,
     View,
     Image,
-    Button,
     TouchableNativeFeedback,
     StyleSheet
 } from 'react-native';
+import { Button } from 'react-native-elements';
+import utils from '../utilities/utils';
 
 export default class FeedItem extends React.PureComponent {
     _onPressDetail = () => {
@@ -30,7 +31,11 @@ export default class FeedItem extends React.PureComponent {
                         aspectRatio: 1
                     }}/>
                 </TouchableNativeFeedback>
-                <Button title={'Buy'} onPress={this._onPressBuy}/>
+                <Button
+                    title={utils.getActionButtonLabel(this.props.feedItem.type)}
+                    onPress={this._onPressBuy}
+                    backgroundColor={'#1673E6'}
+                />
             </View>
         );
     }
@@ -44,5 +49,5 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 5,
         marginHorizontal: 5
-    }
+    },
 });
