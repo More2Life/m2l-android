@@ -12,10 +12,10 @@ export default class FeedItemList extends React.Component {
         super(props);
     };
 
-    _fetchProductFromShopify = (handle, callback) => {
-        shopify.fetchProductByHandle(handle)
+    _fetchProductFromShopify = (feedItemHandle, callback) => {
+        shopify.fetchProductByHandle(feedItemHandle)
             .then( (product) => {
-                console.log(JSON.stringify(product));
+                //console.log(JSON.stringify(product));
                 callback(JSON.parse(JSON.stringify(product)));
             })
             .catch((e) => {

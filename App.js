@@ -22,7 +22,7 @@ class FeedScreen extends React.Component {
         title: 'More2Life',
         headerRight: <DonateButton />,
         headerStyle: {
-            paddingRight: 20
+            paddingRight: 15
         }
     };
 
@@ -49,14 +49,14 @@ class FeedScreen extends React.Component {
             .then(res => res.json())
             .then(res => {
                 // const i = res[count-1] ? res[count-1]._id : null;
-                const x = this.state.feedItems.length;
+                const numFeedItems = this.state.feedItems.length;
                 // console.log(res);
                 this.setState({
                     // loading: false,
                     // refreshing: false,
                     // error: res.error || null,
                     // itemIndex: i,
-                    feedItems: x ? res : [...this.state.feedItems, ...res]
+                    feedItems: numFeedItems ? res : [...this.state.feedItems, ...res]
                 });
             })
             .catch(error => {

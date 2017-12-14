@@ -10,11 +10,12 @@ import {
     Linking
 } from 'react-native';
 import { Button } from 'react-native-elements';
+import ImageSlider from './ImageSlider';
 import utils from '../utilities/utils';
 
 class FeedItemDetail extends React.PureComponent {
     _getProduct = () => {
-
+        Alert.alert("Get product!");
     }
 
     _takeAction = () => {
@@ -45,10 +46,10 @@ class FeedItemDetail extends React.PureComponent {
                 flex: 1
             }}>
                 <Text style={styles.title}>{this.props.feedItem.title}</Text>
-                <Image source={image} style={{
-                    flex: 1,
-                    aspectRatio: 1
-                }}/>
+                <ImageSlider images={[
+                        this.props.feedItem.feedImageUrl,
+                        this.props.feedItem.feedImageUrl,
+                        this.props.feedItem.feedImageUrl]}/>
                 <Text>{this.props.feedItem.description}</Text>
                 <Button
                     title={utils.getActionButtonLabel(this.props.feedItem.type)}

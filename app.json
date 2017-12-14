@@ -1,5 +1,9 @@
 {
   "expo": {
-    "sdkVersion": "21.0.0"
+    "name": "More2Life",
+    "slug": "more2life",
+    "sdkVersion": "21.0.0",
+    "orientation": "portrait",
+    "icon": "./resources/m2l_android_logo.png"
   }
 }
