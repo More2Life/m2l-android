@@ -10,12 +10,15 @@ import { StackNavigator } from 'react-navigation';
 import FeedItemList from './components/FeedItemList';
 import { FeedItemDetailScreen } from './components/FeedItemDetail';
 import DonateButton from './components/DonateButton';
+// import utils from './utilities/utils';
 
 // ==> an extreme hack but apparently absolutely critical
 if (!global.atob) {
     global.atob = require('base-64').decode;
     global.btoa = require('base-64').encode;
 }// ======================================================
+
+const shopify = utils.getShopifyClient();
 
 class FeedScreen extends React.Component {
     static navigationOptions = {
@@ -37,31 +40,44 @@ class FeedScreen extends React.Component {
             feedItems: []
         };
     }
+
     componentDidMount() {
         this.getFeedItems();
     }
-    getFeedItems = () => {
+
+    getFeedItems = async () => {
         // const {itemIndex, count} = this.state;
         // const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems?index=${itemIndex}&count=${count}';
         const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems';
         // this.setState({loading:true});
-        fetch(url)
-            .then(res => res.json())
-            .then(res => {
-                // const i = res[count-1] ? res[count-1]._id : null;
-                const numFeedItems = this.state.feedItems.length;
-                // console.log(res);
-                this.setState({
-                    // loading: false,
-                    // refreshing: false,
-                    // error: res.error || null,
-                    // itemIndex: i,
-                    feedItems: numFeedItems ? res : [...this.state.feedItems, ...res]
-                });
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        var results = await(await fetch(url)).json();
+        var feedItems = await Promise.map(results, async (res) => {
+            if (res.type == 'listing' || res.type == 'donation')
+                res.shopifyData = await shopify.fetchProductByHandle(res.handle);
+            return res;
+        });
+        console.log("Here are the feedItems", feedItems);
+        this.setState({
+            feedItems: this.state.feedItems.length ? feedItems : [...this.state.feedItems, ...feedItems]
+        });
+
+        // fetch(url)
+        //     .then(res => res.json())
+        //     .then(res => {
+        //         // const i = res[count-1] ? res[count-1]._id : null;
+        //         const numFeedItems = this.state.feedItems.length;
+        //         // console.log(res);
+        //         this.setState({
+        //             // loading: false,
+        //             // refreshing: false,
+        //             // error: res.error || null,
+        //             // itemIndex: i,
+        //             feedItems: numFeedItems ? res : [...this.state.feedItems, ...res]
+        //         });
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
     };
 
     render() {

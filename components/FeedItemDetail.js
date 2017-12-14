@@ -68,7 +68,9 @@ class FeedItemDetailScreen extends Component {
     });
     render() {
         return (
-            <FeedItemDetail feedItem={this.props.navigation.state.params.feedItem}/>
+            <FeedItemDetail
+                feedItem={this.props.navigation.state.params.feedItem}
+            />
         );
     }
 }
