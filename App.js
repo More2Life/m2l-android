@@ -10,7 +10,7 @@ import { StackNavigator } from 'react-navigation';
 import FeedItemList from './components/FeedItemList';
 import { FeedItemDetailScreen } from './components/FeedItemDetail';
 import DonateButton from './components/DonateButton';
-// import utils from './utilities/utils';
+import utils from './utilities/utils';
 
 // ==> an extreme hack but apparently absolutely critical
 if (!global.atob) {
