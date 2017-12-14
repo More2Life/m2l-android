@@ -7,6 +7,7 @@ import {
     StatusBar
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import Promise from 'bluebird';
 import FeedItemList from './components/FeedItemList';
 import { FeedItemDetailScreen } from './components/FeedItemDetail';
 import DonateButton from './components/DonateButton';
