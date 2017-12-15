@@ -1,22 +1,21 @@
 /* @flow */
 
-import React, { Component } from 'react';
-import {
-  Button,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import React, {Component} from 'react';
+import {Button, Alert, StyleSheet} from 'react-native';
 
 export default class DonateButton extends Component {
-  render() {
-    return (
-      <Button title="Donate" onPress={()=>{Alert.alert('Thanks!')}}/>
-    );
-  }
+
+    _onPress = () => {
+        if (this.props.onPress) this.props.onPress();
+    }
+
+    render() {
+        return (<Button title="Donate" onPress={this._onPress} disabled={true && !this.props.show}/>);
+    }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+    container: {
+        flex: 1
+    }
 });

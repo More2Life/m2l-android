@@ -50,6 +50,8 @@ export default class FeedItemList extends React.Component {
                 keyExtractor={item => item._id}
                 renderItem={this._renderFeedItem}
                 extraData={this.state}
+                refreshing={this.props.refreshing}
+                onRefresh={this.props.onRefresh}
             />
         )
     }

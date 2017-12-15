@@ -21,6 +21,10 @@ const utils = {
             donation: 'Donate'
         }
         return actionButtonLabels[type];
+    },
+
+    getDonationBucketId: () => {
+        return 'donation';
     }
 
 }

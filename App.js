@@ -4,7 +4,9 @@ import {
     Text,
     View,
     Platform,
-    StatusBar
+    StatusBar,
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Promise from 'bluebird';
@@ -22,44 +24,72 @@ if (!global.atob) {
 const shopify = utils.getShopifyClient();
 
 class FeedScreen extends React.Component {
-    static navigationOptions = {
-        title: 'More2Life',
-        headerRight: <DonateButton />,
-        headerStyle: {
-            paddingRight: 15
-        }
-    };
-
     constructor(props) {
         super(props);
+
         this.state = {
-            loading: false,
+            loading: true,
             refreshing: false,
             itemIndex: null,
             count: 2,
             error: null,
-            feedItems: []
+            feedItems: [],
+            donationBuckets: null
         };
     }
 
-    componentDidMount() {
-        this.getFeedItems();
+    static navigationOptions = ({ navigation }) => {
+        const { params = {} } = navigation.state;
+        let headerRight = (
+            <DonateButton
+                show={params.show}
+                onPress={params.pressDonate}/>
+        );
+
+        return {
+            title: 'More2Life',
+            headerRight: headerRight,
+            headerStyle: {
+                paddingRight: 15
+            }
+        };
+    };
+
+    _pressDonate = () => {
+        Alert.alert("The Component gets to tell the header button what to do.");
     }
 
-    getFeedItems = async () => {
+    _getFeedItems = async () => {
         // const {itemIndex, count} = this.state;
         // const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems?index=${itemIndex}&count=${count}';
         const url = 'https://m2l-server-dev.herokuapp.com/api/feeditems';
         // this.setState({loading:true});
+
+        var raw = await shopify.fetchProductByHandle(utils.getDonationBucketId());
+        raw = JSON.parse(JSON.stringify(raw));
+        var buckets = {};
+        buckets.variants = raw.variants.map((v) => {
+            return (({ available, id, price, title }) => ({ available, id, price, title }))(v);
+        });
+        buckets.id = raw.id;
+        buckets.handle = raw.handle;
+
         var results = await(await fetch(url)).json();
         var feedItems = await Promise.map(results, async (res) => {
-            if (res.type == 'listing' || res.type == 'donation')
-                res.shopifyData = await shopify.fetchProductByHandle(res.handle);
+            if (res.type == 'listing' || res.type == 'donation') {
+                var shopifyData = await shopify.fetchProductByHandle(res.handle);
+                shopifyData = JSON.parse(JSON.stringify(shopifyData));
+                res.shopify = this._extractShopifyData(shopifyData);
+            } else if (res.type == 'story') {
+                res.buckets
+            }
             return res;
         });
-        console.log("Here are the feedItems", feedItems);
+
         this.setState({
-            feedItems: this.state.feedItems.length ? feedItems : [...this.state.feedItems, ...feedItems]
+            feedItems: this.state.feedItems.length ? feedItems : [...this.state.feedItems, ...feedItems],
+            donationBuckets: buckets,
+            loading: false
         });
 
         // fetch(url)
@@ -79,23 +109,42 @@ class FeedScreen extends React.Component {
         //     .catch(error => {
         //         console.error(error);
         //     });
-    };
+    }
+
+    _extractShopifyData = (shopifyData) => {
+        var mapped = {};
+        mapped.images = shopifyData.images.map((i) => {
+            return (({ id, src }) => ({ id, src }))(i);
+        });
+        mapped.variants = shopifyData.variants.map((v) => {
+            return (({ available, id, price, title }) => ({ available, id, price, title }))(v);
+        });
+        mapped.id = shopifyData.id;
+        return mapped;
+    }
+
+    async componentDidMount() {
+        await this._getFeedItems();
+        this.props.navigation.setParams({
+            show: true,
+            pressDonate: this._pressDonate
+        });
+    }
 
     render() {
+        console.log("State at render: ", this.state);
         const {navigate} = this.props.navigation;
-        if (this.state.feedItems.length == 0) {
-            return (
-                <View>
-                    <Text>{'Fetching the feed...'}</Text>
-                </View>
-            );
-        } else {
-            return (
-                <View>
-                    <FeedItemList feedItems={this.state.feedItems} navigate={navigate}/>
-                </View>
-            );
-        }
+        return (
+            <View>
+                <FeedItemList
+                    feedItems={this.state.feedItems}
+                    navigate={navigate}
+                    refreshing={this.state.loading}
+                    onRefresh={this._getFeedItems}
+                />
+                <ActivityIndicator size={'large'} animate={this.props.loading}/>
+            </View>
+        );
     }
 }
 
@@ -122,5 +171,15 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 5,
         marginHorizontal: 5
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#F5FCFF88'
     }
 });
