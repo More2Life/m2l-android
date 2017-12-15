@@ -10,7 +10,11 @@ export default class DonateButton extends Component {
     }
 
     render() {
-        return (<Button title="Donate" onPress={this._onPress} disabled={true && !this.props.show}/>);
+        return (<Button
+            title="Donate"
+            onPress={this._onPress}
+            disabled={true && !this.props.show}
+        />);
     }
 }
 

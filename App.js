@@ -81,7 +81,7 @@ class FeedScreen extends React.Component {
                 shopifyData = JSON.parse(JSON.stringify(shopifyData));
                 res.shopify = this._extractShopifyData(shopifyData);
             } else if (res.type == 'story') {
-                res.buckets
+                res.buckets = buckets;
             }
             return res;
         });
@@ -132,7 +132,6 @@ class FeedScreen extends React.Component {
     }
 
     render() {
-        console.log("State at render: ", this.state);
         const {navigate} = this.props.navigation;
         return (
             <View>
@@ -142,7 +141,7 @@ class FeedScreen extends React.Component {
                     refreshing={this.state.loading}
                     onRefresh={this._getFeedItems}
                 />
-                <ActivityIndicator size={'large'} animate={this.props.loading}/>
+                <ActivityIndicator style={styles.loading} size={'large'} animate={this.props.loading}/>
             </View>
         );
     }
@@ -173,13 +172,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 5
     },
     loading: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#F5FCFF88'
+        marginTop: 20
     }
 });

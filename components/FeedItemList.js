@@ -12,34 +12,10 @@ export default class FeedItemList extends React.Component {
         super(props);
     };
 
-    _fetchProductFromShopify = (feedItemHandle, callback) => {
-        shopify.fetchProductByHandle(feedItemHandle)
-            .then( (product) => {
-                //console.log(JSON.stringify(product));
-                callback(JSON.parse(JSON.stringify(product)));
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
-
-    _onPressItem = (feedItem) => {
-        this._fetchProductFromShopify(feedItem.handle, (product) => {
-            this.props.navigate('Detail', { feedItem: feedItem, product: product })
-        })
-    };
-
-    _onPressBuy = (handle) => {
-        this._fetchProductFromShopify(handle, () => {
-            console.log('from callback');
-        });
-    };
-
     _renderFeedItem = ({item}) => (
         <FeedItem
             feedItem = {item}
-            onPressItem = {this._onPressItem}
-            onPressBuy = {this._onPressBuy}
+            navigate= {this.props.navigate}
         />
     );
 

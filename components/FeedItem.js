@@ -7,36 +7,30 @@ import {
     StyleSheet
 } from 'react-native';
 import { Button } from 'react-native-elements';
+
+import FeedItemContent from './FeedItemContent';
 import utils from '../utilities/utils';
 
 export default class FeedItem extends React.PureComponent {
-    _onPressDetail = () => {
-        this.props.onPressItem(this.props.feedItem);
+    _onPressForDetail = () => {
+        this.props.navigate('Detail', { feedItem: this.props.feedItem })
     };
 
-    _onPressBuy = () => {
-        this.props.onPressBuy(this.props.feedItem.handle);
-    }
+    _onPressActionButton = () => {
+        console.log("press buy");
+    };
 
     render() {
-        let image = {
-            uri: this.props.feedItem.feedImageUrl
-        };
         return (
-            <View style={{flex: 1}}>
-                <Text style={styles.title}>{this.props.feedItem.title}</Text>
-                <TouchableNativeFeedback onPress={this._onPressDetail}>
-                    <Image source={image} style={{
-                        flex: 1,
-                        aspectRatio: 1
-                    }}/>
-                </TouchableNativeFeedback>
+            <FeedItemContent
+                feedItem={this.props.feedItem}
+                onPressForDetail={this._onPressForDetail}>
                 <Button
                     title={utils.getActionButtonLabel(this.props.feedItem.type)}
-                    onPress={this._onPressBuy}
+                    onPress={this._onPressActionButton}
                     backgroundColor={'#1673E6'}
                 />
-            </View>
+            </FeedItemContent>
         );
     }
 }

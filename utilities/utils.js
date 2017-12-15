@@ -1,4 +1,5 @@
 import Client, {Config} from 'shopify-buy';
+import {Alert} from 'react-native';
 
 const SHOPIFY_TOKEN = '3c68bfc95783e266d19558d4fafe34f1';
 const SHOPIFY_DOMAIN = 'more2life-foundation.myshopify.com';
@@ -25,6 +26,10 @@ const utils = {
 
     getDonationBucketId: () => {
         return 'donation';
+    },
+
+    buyThisThing: (variantId) => {
+        Alert.alert("Okay! Let's buy this thing! ", variantId);
     }
 
 }
