@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Promise from 'bluebird';
+
 import FeedItemList from './components/FeedItemList';
-import { FeedItemDetailScreen } from './components/FeedItemDetail';
+import { ItemDetailScreen } from './components/ItemDetail';
 import DonateButton from './components/DonateButton';
 import utils from './utilities/utils';
 
@@ -80,6 +81,7 @@ class FeedScreen extends React.Component {
                 var shopifyData = await shopify.fetchProductByHandle(res.handle);
                 shopifyData = JSON.parse(JSON.stringify(shopifyData));
                 res.shopify = this._extractShopifyData(shopifyData);
+                if (res.type == 'donation') res.price = 'Donate';
             } else if (res.type == 'story') {
                 res.buckets = buckets;
             }
@@ -150,7 +152,7 @@ class FeedScreen extends React.Component {
 export default App = StackNavigator(
     {
         Feed: { screen: FeedScreen },
-        Detail: { screen: FeedItemDetailScreen }
+        Detail: { screen: ItemDetailScreen }
     },
     {
         cardStyle: { paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight }

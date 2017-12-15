@@ -29,7 +29,11 @@ const utils = {
     },
 
     buyThisThing: (variantId) => {
-        Alert.alert("Okay! Let's buy this thing! ", variantId);
+        Alert.alert("Okay! Let's buy this thing! " + variantId);
+    },
+
+    actionButtonAction: (feedItem) => {
+
     }
 
 }

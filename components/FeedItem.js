@@ -4,29 +4,56 @@ import {
     View,
     Image,
     TouchableNativeFeedback,
-    StyleSheet
+    StyleSheet,
+    Linking,
+    Alert
 } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import FeedItemContent from './FeedItemContent';
 import utils from '../utilities/utils';
 
-export default class FeedItem extends React.PureComponent {
+export default class FeedItem extends React.Component {
     _onPressForDetail = () => {
         this.props.navigate('Detail', { feedItem: this.props.feedItem })
     };
 
+    _getTypedFeedItem = () => {
+        switch (this.props.feedItem.type) {
+            case 'story':
+                return (<StoryFeedItem feedItem={this.props.feedItem} onPressForDetail={this._onPressForDetail}/>);
+                break;
+            case 'event':
+                return (<EventFeedItem feedItem={this.props.feedItem} onPressForDetail={this._onPressForDetail}/>);
+                break;
+            case 'listing':
+                return (<ShopifyFeedItem feedItem={this.props.feedItem} onPressForDetail={this._onPressForDetail}/>);
+                break;
+            case 'donation':
+                return (<ShopifyFeedItem feedItem={this.props.feedItem} onPressForDetail={this._onPressForDetail}/>);
+                break;
+            default:
+                return (<View></View>)
+        }
+    }
+
+    render() {
+        return this._getTypedFeedItem();
+    }
+}
+
+class ShopifyFeedItem extends React.Component {
     _onPressActionButton = () => {
-        console.log("press buy");
-    };
+        Alert.alert("Show variant options");
+    }
 
     render() {
         return (
             <FeedItemContent
                 feedItem={this.props.feedItem}
-                onPressForDetail={this._onPressForDetail}>
+                onPressForDetail={this.props.onPressForDetail}>
                 <Button
-                    title={utils.getActionButtonLabel(this.props.feedItem.type)}
+                    title={this.props.feedItem.price+""}
                     onPress={this._onPressActionButton}
                     backgroundColor={'#1673E6'}
                 />
@@ -34,6 +61,29 @@ export default class FeedItem extends React.PureComponent {
         );
     }
 }
+
+class StoryFeedItem extends React.Component {
+    render() {
+        return (
+            <FeedItemContent
+                feedItem={this.props.feedItem}
+                onPressForDetail={this.props.onPressForDetail}>
+            </FeedItemContent>
+        );
+    }
+}
+
+class EventFeedItem extends React.Component {
+    render() {
+        return (
+            <FeedItemContent
+                feedItem={this.props.feedItem}
+                onPressForDetail={this.props.onPressForDetail}>
+            </FeedItemContent>
+        );
+    }
+}
+
 
 const styles = StyleSheet.create({
     title: {

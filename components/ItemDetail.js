@@ -13,7 +13,7 @@ import { Button } from 'react-native-elements';
 import ImageSlider from './ImageSlider';
 import utils from '../utilities/utils';
 
-class FeedItemDetail extends React.PureComponent {
+class ItemDetail extends React.PureComponent {
     _getProduct = () => {
         Alert.alert("Get product!");
     }
@@ -62,13 +62,13 @@ class FeedItemDetail extends React.PureComponent {
     }
 }
 
-class FeedItemDetailScreen extends Component {
+class ItemDetailScreen extends Component {
     static navigationOptions = ({ navigation }) => ({
         title: navigation.state.params.feedItem.title,
     });
     render() {
         return (
-            <FeedItemDetail feedItem={this.props.navigation.state.params.feedItem}/>
+            <ItemDetail feedItem={this.props.navigation.state.params.feedItem}/>
         );
     }
 }
@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
 });
 
 export {
-    FeedItemDetail,
-    FeedItemDetailScreen,
+    ItemDetail,
+    ItemDetailScreen,
 }
